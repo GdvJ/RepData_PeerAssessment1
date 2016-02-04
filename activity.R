@@ -1,52 +1,30 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
 
+setwd("C:/Users/Jvandegevel/Documents/Coursera/Reproducible Research")
 
-## Loading and preprocessing the data
-
-```{r}
 file <- unzip("activity.zip")
 dataset <- read.csv(file,sep = ",", header = TRUE, stringsAsFactors = FALSE)
 data <- dataset[which(!is.na(dataset$steps)),]
-```
 
 
-## What is mean total number of steps taken per day?
-```{r}
 nrsteps <-tapply(data$steps, data$date, sum)
 
 #Show histogram
 hist(nrsteps, main ="Total # of steps per days", xlab = "", col="blue")
 
-# What is the mean total number of steps taken per day?
+# What are the mean and median total number of steps taken per day?
 mean(nrsteps)
-
-# What is the median total number of steps taken per day?
 median(nrsteps)
-```
 
-## What is the average daily activity pattern?
-```{r}
 #What is the average daily activity pattern?
 dailysteps <-tapply(data$steps, data$interval, mean)
 
-#Show plot
 plot(y = dailysteps,x = names(dailysteps), type = "l", xlab = "5-minute interval", 
      main = "Average Daily Activity Pattern", ylab = "Average # of steps")
 
-#What is the maximum amount?
 max(dailysteps)
-
-#What is the corresponding interval?
 dailysteps[dailysteps == max(dailysteps)]
-```
 
-## Imputing missing values
-```{r}
+
 #Inputting missing values
 data <- dataset
 data[which(is.na(data$steps)),1] <- dailysteps[as.character(data[which(is.na(data$steps)),3])]
@@ -59,15 +37,7 @@ hist(dailysteps_new, main = "Total # of steps per day", xlab = "",col="red")
 mean(dailysteps_new)
 median(dailysteps_new)
 
-#Do the values differ from before? What is the impact?
-mean(nrsteps)-mean(dailysteps_new)
-median(nrsteps)-median(dailysteps_new)
-```
 
-As can be seen, the impact on the mean and median is relatively small.
-
-```{r}
-## Are there differences in activity patterns between weekdays and weekends?
 #Convert dates to date format
 data$date <- as.Date(data$date)
 
@@ -105,6 +75,3 @@ plot(y = dailysteps_weekend, x = names(dailysteps_weekend), type = "l", xlab = "
 #Make plot for weekday
 plot(y = dailysteps_weekday,x = names(dailysteps_weekday), type = "l", xlab = "5-minute interval", 
      main = "Average Daily Activity Pattern on weekdays", ylab = "Average # of steps")
-```
-
-As can be seen in the plots, the activity patterns differ quite a bit between the weekdays and weekend.
